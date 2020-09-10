@@ -8,10 +8,10 @@ import edit from '../img/edit.svg';
 import './place.css';
 
 
-const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
-  const [ faster, setFaster ] = useState(true);
-  const [ time, setTime ] = useState('');
-  const [ selfService, setSelfService ] = useState(false);
+const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, basketState, setBasketState }) => {
+  const [ faster, setFaster ] = useState(basketState.faster);
+  const [ time, setTime ] = useState(basketState.time);
+  const [ selfService, setSelfService ] = useState(basketState.selfService);
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
 
@@ -99,6 +99,9 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         <Link
           className="Place__change-product"
           to={`/place/${areaId}/${itemId}`}
+          onClick={() => {
+            setBasketState({faster, time, selfService});
+          }}
         >
           Изменить
         </Link>
@@ -122,6 +125,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         <div className="Place__choice-item">
           <span>Назначить</span>
           <input
+            type="time"
             value={time}
             onFocus={() => {
               setFaster(false);
@@ -143,11 +147,14 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         </div>
         <div className="Place__choice-item">
           <h3>На месте</h3>
-          <Checkbox checked={!selfService} onToggle={() => setSelfService(!setSelfService)} />
+          <Checkbox checked={!selfService} onToggle={() => setSelfService(!selfService)} />
         </div>
       </div>
       <footer className="Place__footer">
-        <Link to={`/order/${area.id}/${item.id}`} className="Place__order">
+        <Link
+            to={price > 0 ?`/order/${area.id}/${item.id}` : '#'}
+            className="Place__order"
+        >
           Оплатить {price}
         </Link>
       </footer>

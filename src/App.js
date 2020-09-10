@@ -33,7 +33,7 @@ const FOOD_AREAS = [{
 			name: 'Классик',
 			price: 150,
 		}, {
-			id: 'bigmac',
+			id: 'french-fries',
 			image: OneTowar,
 			name: 'Картофель фри',
 			price: 50,
@@ -125,6 +125,7 @@ const foodsMap = FOOD_AREAS.reduce((result, area) => {
 }, {});
 
 const App = () => {
+	const [ basketState, setBasketState ] = useState({faster: true, time: '', selfService: false});
 	const [ orderStatuses, setOrderStatuses ] = useState(JSON.parse((localStorage.getItem('orderStatuses') || 'null')) || {});
 	const [ order, setOrder ] = useState(JSON.parse((localStorage.getItem('orders') || 'null')) || {});
 
@@ -152,6 +153,8 @@ const App = () => {
 					<Basket
 						foodAreas={FOOD_AREAS}
 						order={order}
+						basketState={basketState}
+						setBasketState={setBasketState}
 					/>
 				</Route>
 				<Route
@@ -165,7 +168,7 @@ const App = () => {
 						setFinishedOrder={({ itemId }) => {
 							const nextStatuses = {...orderStatuses};
 
-							nextStatuses[itemId] = 'DONE';
+							nextStatuses[itemId] = 'CANCELED';
 
 							setOrderStatuses(nextStatuses);
 							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
